@@ -110,7 +110,9 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
-  $allStoriesList.show();
+  putStoriesOnPage();  
+
+  // $allStoriesList.show();
 
   updateNavOnLogin();
 }
@@ -137,11 +139,20 @@ async function removeFavorites(story) {
   removeFavoritesOnFavArea(story.storyId)
 };
 
-function removeFavoritesOnFavArea(storyId){
+function removeFavoritesOnFavArea(storyId) {
   for(let story of $favStoryArea[0].childNodes){
     if(storyId == story.id){
-      console.log('storyId')
+      // console.log('storyId')
       story.remove();
+    }
+  }
+}
+
+function containsFavorite(storyId) {
+  for(let story of $favStoryArea[0].childNodes){
+    if(storyId == story.id){
+      // console.log('storyId')
+      return true
     }
   }
 }
@@ -150,7 +161,7 @@ function generateFavoritesMarkup(story) {
   const hostName = story.getHostName();
   return $(
      `<li id="${story.storyId}">
-        <small class="unfilledStar">&star;</small>
+        <a href="#" class="favStar">&starf;</a>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -200,6 +211,19 @@ $allStoriesList.on('click', (evt) => {
     }
     evt.target.innerHTML = '&star;'
     evt.target.className = 'unfilledStar'
+  }
+})
+
+$favStoryArea.on('click', function(evt) {
+  evt.preventDefault;
+  const e = evt.target.className
+  if(e == 'favStar') {
+    for(let favorite of currentUser.favorites){
+      if(favorite.storyId == evt.target.parentNode.id){
+        removeFavorites(favorite)
+        console.log('removed from favorites');
+      }
+    }
   }
 })
 

@@ -28,9 +28,9 @@ function generateStoryMarkup(story) {
 
   // added unfilled star to each story
   const hostName = story.getHostName();
-  return $(`
+  if(currentUser == undefined){
+    return $(`
       <li id="${story.storyId}">
-        <small class="unfilledStar">&star;</small>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -39,6 +39,20 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+  } else {
+    return $(`
+      <li id="${story.storyId}">
+        <a href="#" class="unfilledStar">&star;</a>
+        <a href="#" class="trashCan" id=${story.storyId}>&#128465;</a>
+        <a href="${story.url}" target="a_blank" class="story-link">
+          ${story.title}
+        </a>
+        <small class="story-hostname">(${hostName})</small>
+        <small class="story-author">by ${story.author}</small>
+        <small class="story-user">posted by ${story.username}</small>
+      </li>
+    `);
+  }
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -57,6 +71,7 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+// Adding Story
 $addStoryArea.on('submit', function(evt) {
   evt.preventDefault();
   const title = $addStoryTitle.value();
@@ -69,3 +84,25 @@ $addStoryArea.on('submit', function(evt) {
   $addStoryURL.clear();
   $addStoryAuthor.clear();
 })
+
+// Deleting Story, only available to logged in users
+$allStoriesList.on('click', function(evt) {
+  evt.preventDefault();
+  for(let story of $allStoriesList[0].childNodes){
+    if(story.id == evt.target.id) {
+      removeStory(story.id)
+      if(containsFavorite(story.id)){
+        removeFavoritesOnFavArea(story.id)
+      }
+    }
+  }
+})
+
+function removeStory(storyId) {
+  for(let story of $allStoriesList[0].childNodes){
+    if(storyId == story.id){
+      // console.log('storyId')
+      story.remove();
+    }
+  }
+}

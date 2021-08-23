@@ -44,7 +44,7 @@
 
 .filledStar {
   font-size: 150%;
-  color: orangered
+  color: orangered;
 }
 
 #addStoryButton {
@@ -54,6 +54,11 @@
   color: black;
   font-weight: bold;
   background-color: orangered;
+}
+
+.trashCan {
+  color:red;
+  font-size: 150%;
 }
 
 /* figure out hover effect */
